@@ -1,0 +1,46 @@
+# Titanic деректерін талдау жобасы (1–8 тапсырмалар)
+
+Бұл жұмыста 1–8 тапсырмаларға сәйкес деректерді талдау, тазалау және визуализациялау кезеңдері көрсетілген[span_3](start_span)[span_3](end_span).
+Рәсімдеу талаптары бойынша есеп `.docx` немесе `.pdf` форматында (14 pt шрифт, 1.5 интервал, 5–7 бет), ал код Jupyter Notebook-та түсініктемелермен рәсімделеді[span_4](start_span)[span_4](end_span).
+
+## Қысқаша мазмұны
+- **1-тапсырма:** Деректер мен ақпарат айырмашылығы және мысалдар[span_5](start_span)[span_5](end_span).
+- **2-тапсырма:** 10 деректер жинағының құрылымы мен типін анықтау[span_6](start_span)[span_6](end_span).
+- **3-тапсырма:** Ашық дереккөз (Titanic) және CSV, Excel, JSON форматтарын салыстыру[span_7](start_span)[span_7](end_span).
+- **4-тапсырма:** Мақсатты айнымалы (`survived`) және белгілер (`features`)[span_8](start_span)[span_8](end_span).
+- **5-тапсырма:** Бос мәндерді, қайталанған жолдарды және аномалияларды тазалау[span_9](start_span)[span_9](end_span).
+- **6-тапсырма:** 5 график (атауы, осьтері және өлшем бірліктері бар) және қорытындылар[span_10](start_span)[span_10](end_span).
+- **7-тапсырма:** Толық жоба (Jupyter Notebook + 5–7 беттік есеп)[span_11](start_span)[span_11](end_span).
+- **8-тапсырма:** 7–10 минуттық қорғауға дайындық[span_12](start_span)[span_12](end_span).
+
+## Python коды (Jupyter Notebook үшін)
+```python
+import matplotlib.pyplot as plt
+import pandas as pd
+import seaborn as sns
+
+url = (
+    "[https://raw.githubusercontent.com/mwaskom/seaborn-data/master/titanic.csv](https://raw.githubusercontent.com/mwaskom/seaborn-data/master/titanic.csv)"
+)
+df = pd.read_csv(url)
+
+df.to_csv("titanic_data.csv", index=False)
+df.to_excel("titanic_data.xlsx", index=False)
+df.to_json("titanic_data.json", orient="records", indent=2, force_ascii=False)
+
+target = "survived"
+features = ["pclass", "sex", "age", "sibsp", "parch", "fare", "embarked"]
+
+df_clean = df.drop_duplicates().copy()
+df_clean["age"] = df_clean["age"].fillna(df_clean["age"].median())
+df_clean["embarked"] = df_clean["embarked"].fillna(
+    df_clean["embarked"].mode()[0]
+)
+
+plt.figure(figsize=(8, 4))
+sns.histplot(df_clean["age"], bins=25, kde=True)
+plt.title("Жолаушылардың жас бойынша таралуы")
+plt.xlabel("Жасы, жыл")
+plt.ylabel("Жолаушылар саны, адам")
+plt.tight_layout()
+plt.show()
